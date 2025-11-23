@@ -11,17 +11,9 @@ client = AsyncOpenAI(api_key=settings.openai_api_key)
 
 openai.api_key = settings.openai_api_key
 
-
-# ============================================
-# FILE PROCESSOR
-# ============================================
-
 class FileProcessor:
-    """Класс для обработки файлов PDF и DOCX"""
-
     @staticmethod
     def extract_text_from_pdf(file_path: str) -> str:
-        """Извлекает текст из PDF файла используя PyMuPDF"""
         try:
             doc = pymupdf.open(file_path)
             text = ""
@@ -35,7 +27,6 @@ class FileProcessor:
 
     @staticmethod
     def extract_text_from_docx(file_path: str) -> str:
-        """Извлекает текст из DOCX файла используя docx2txt"""
         try:
             text = docx2txt.process(file_path)
             return text.strip()
@@ -45,11 +36,8 @@ class FileProcessor:
 
 
 class OpenAIService:
-    """Старый класс для базовой генерации"""
-
     @staticmethod
     def generate_summary(lecture_text: str) -> str:
-        """Генерирует конспект лекции"""
         try:
             prompt = f"""Создай структурированный конспект лекции. Используй понятный человеческий язык и четкую структуру.
 
@@ -102,7 +90,6 @@ class OpenAIService:
 
     @staticmethod
     def generate_test(lecture_text: str) -> List[Dict]:
-        """Генерирует тест по лекции"""
         try:
             prompt = f"""Создай тест из вопросов по материалу лекции.
 
@@ -144,7 +131,6 @@ JSON:"""
 
             content = response.choices[0].message.content.strip()
 
-            # Очистка от markdown
             if content.startswith("```json"):
                 content = content[7:]
             if content.startswith("```"):
@@ -168,7 +154,6 @@ class FastAIService:
 
     @staticmethod
     async def _async_openai_call(prompt: str, system_prompt: str, max_tokens: int = 3000) -> str:
-        """Асинхронный вызов OpenAI API с улучшенной очисткой"""
         try:
             response = await client.chat.completions.create(
                 model=settings.openai_model,
@@ -200,14 +185,10 @@ class FastAIService:
             print(f"OpenAI API Error: {type(e).__name__}: {str(e)}")
             raise HTTPException(status_code=500, detail=f"AI API Error: {str(e)}")
 
-
-# Замените весь метод process_all_features на этот:
-
     @staticmethod
     async def process_all_features(lecture_text: str, target_difficulty: str = None) -> Dict:
         truncated_text = lecture_text[:5000]
 
-        # Настройки в зависимости от уровня сложности
         if target_difficulty == 'beginner':
             summary_length = "800-1000 слов"
             summary_style = "простым языком с примерами и аналогиями"
@@ -222,10 +203,6 @@ class FastAIService:
             test_complexity = "вопросы среднего уровня на понимание и применение"
 
         diff_instruction = f'\nОБЯЗАТЕЛЬНО: Уровень сложности должен быть "{target_difficulty}"!' if target_difficulty else ''
-
-        # ============================================
-        # ПОДГОТОВКА ПРОМПТОВ
-        # ============================================
 
         prompt1 = f"""Создай основные учебные материалы по лекции.{diff_instruction}
     
@@ -323,19 +300,14 @@ class FastAIService:
         system2 = "Ты методист. Создаёшь учебные материалы. Отвечай ТОЛЬКО валидным JSON без markdown."
 
         try:
-            # ============================================
-            # ПАРАЛЛЕЛЬНОЕ ВЫПОЛНЕНИЕ (asyncio.gather)
-            # ============================================
-            print("🚀 Запуск 2 параллельных запросов к OpenAI...")
+            print("запуск 2 параллельных запросов к OpenAI...")
 
-            # Запускаем ОБА запроса ОДНОВРЕМЕННО
             results = await asyncio.gather(
                 FastAIService._async_openai_call(prompt1, system1, max_tokens=8000),
                 FastAIService._async_openai_call(prompt2, system2, max_tokens=5000),
                 return_exceptions=True
             )
 
-            # Проверяем ошибки
             if isinstance(results[0], Exception):
                 print(f"❌ Ошибка в запросе 1: {results[0]}")
                 raise results[0]
@@ -345,14 +317,12 @@ class FastAIService:
 
             response1, response2 = results
 
-            # Парсим результаты
             result1 = json.loads(response1)
-            print("✅ Запрос 1 выполнен: summary, test, difficulty")
+            print("запрос 1 выполнен: summary, test, difficulty")
 
             result2 = json.loads(response2)
-            print("✅ Запрос 2 выполнен: anki, sources, mindmap, presentation")
+            print("запрос 2 выполнен: anki, sources, mindmap, presentation")
 
-            # Объединяем результаты
             return {
                 'summary': result1.get('summary', 'Конспект не создан'),
                 'difficulty_level': result1.get('difficulty', {}).get('level', target_difficulty or 'intermediate'),
@@ -377,15 +347,8 @@ class FastAIService:
             traceback.print_exc()
             raise HTTPException(status_code=500, detail=f"Ошибка: {str(e)}")
 
-
-
-    # ============================================
-    # ОТДЕЛЬНЫЕ МЕТОДЫ (если нужны индивидуально)
-    # ============================================
-
     @staticmethod
     async def generate_difficulty(lecture_text: str) -> Dict:
-        """Определяет уровень сложности лекции"""
         prompt = f"""Оцени уровень сложности лекции: beginner, intermediate или advanced.
 
 Критерии:
@@ -409,7 +372,6 @@ class FastAIService:
 
     @staticmethod
     async def generate_anki_cards(lecture_text: str) -> List[Dict]:
-        """Генерирует Anki карточки"""
         prompt = f"""Создай 10-12 карточек Anki для запоминания материала.
 
 Принципы создания карточек:
@@ -441,7 +403,6 @@ class FastAIService:
 
     @staticmethod
     async def generate_external_sources(lecture_text: str) -> List[Dict]:
-        """Находит внешние источники"""
         prompt = f"""Найди 5-7 внешних источников для углубленного изучения тем из лекции.
 
 Типы источников:
@@ -512,7 +473,6 @@ class FastAIService:
 
     @staticmethod
     async def generate_presentation(lecture_text: str) -> List[Dict]:
-        """Создает слайды презентации"""
         prompt = f"""Создай презентацию из 6-8 слайдов по материалу лекции.
 
 Структура презентации:
@@ -551,14 +511,11 @@ class FastAIService:
         result = json.loads(response)
         return result.get('slides', [])
 
-    # ============================================
-    # ВСПОМОГАТЕЛЬНЫЙ МЕТОД (устарел)
-    # ============================================
 
     @staticmethod
     def parse_results(raw_results: Dict, lecture_text: str) -> Dict:
         """
-        Этот метод больше не нужен при использовании process_all_features
-        Оставлен для обратной совместимости
+        этот метод больше не нужен при использовании process_all_features
+        оставлен для обратной совместимости
         """
         return raw_results

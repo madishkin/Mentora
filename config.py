@@ -1,13 +1,10 @@
 from pydantic_settings import BaseSettings
 from dotenv import load_dotenv
 
-# КРИТИЧНО: Загружаем .env файл ПЕРЕД созданием Settings
 load_dotenv()
 
-
 class Settings(BaseSettings):
-    # Убираем os.getenv() - pydantic сам загрузит из .env
-    openai_api_key: str  # БЕЗ значения по умолчанию
+    openai_api_key: str
     openai_model: str = "gpt-4o-mini"
 
     max_text_length: int = 15000
@@ -24,7 +21,6 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
-        case_sensitive = False  # Не чувствительно к регистру
-
+        case_sensitive = False
 
 settings = Settings()

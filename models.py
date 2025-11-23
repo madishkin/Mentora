@@ -21,7 +21,7 @@ class ExternalSource(BaseModel):
     topic: str
     url: str
     description: str
-    source_type: str  # "article", "definition", "formula"
+    source_type: str
 
 class MindMapNode(BaseModel):
     title: str
