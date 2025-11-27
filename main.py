@@ -95,10 +95,9 @@ async def process_lecture(
             )
 
         lecture_text = lecture_text[:15000]
-        print(f"длина текста: {len(lecture_text)} символов")
 
         # 4.
-        print("параллельная обработка всех фичей...")
+        print("обработка...")
 
         raw_results = await FastAIService.process_all_features(
             lecture_text,
@@ -142,13 +141,10 @@ async def process_lecture(
 if __name__ == "__main__":
     import uvicorn
 
-    print("=" * 50)
-    print("запуск API")
-    print("=" * 50)
+
     print("url: http://0.0.0.0:8000")
     print("документация: http://0.0.0.0:8000/docs")
     print("health check: http://0.0.0.0:8000/health")
-    print("=" * 50)
 
     uvicorn.run(
         "main:app",

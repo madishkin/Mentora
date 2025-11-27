@@ -37,7 +37,7 @@ class FileProcessor:
 
 class OpenAIService:
     @staticmethod
-    def generate_summary(lecture_text: str) -> str:
+    async def generate_summary(lecture_text: str) -> str:
         try:
             prompt = f"""Создай структурированный конспект лекции. Используй понятный человеческий язык и четкую структуру.
 
@@ -74,7 +74,7 @@ class OpenAIService:
 
 Конспект:"""
 
-            response = openai.chat.completions.create(
+            response = await openai.chat.completions.create(
                 model=settings.openai_model,
                 messages=[
                     {"role": "system", "content": "Ты профессиональный методист, который создаёт качественные конспекты лекций. Пиши понятным языком, структурируй материал логично. Используй только обычный текст с абзацами, БЕЗ markdown разметки."},
@@ -309,10 +309,10 @@ class FastAIService:
             )
 
             if isinstance(results[0], Exception):
-                print(f"❌ Ошибка в запросе 1: {results[0]}")
+                print(f"Ошибка в запросе 1: {results[0]}")
                 raise results[0]
             if isinstance(results[1], Exception):
-                print(f"❌ Ошибка в запросе 2: {results[1]}")
+                print(f"Ошибка в запросе 2: {results[1]}")
                 raise results[1]
 
             response1, response2 = results
@@ -336,13 +336,13 @@ class FastAIService:
             }
 
         except json.JSONDecodeError as je:
-            print(f"❌ JSON ERROR: {je}")
+            print(f"JSON ERROR: {je}")
             raise HTTPException(
                 status_code=500,
                 detail="Ошибка парсинга ответа. Попробуйте загрузить файл заново."
             )
         except Exception as e:
-            print(f"❌ ERROR: {e}")
+            print(f"ERROR: {e}")
             import traceback
             traceback.print_exc()
             raise HTTPException(status_code=500, detail=f"Ошибка: {str(e)}")
