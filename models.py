@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from typing import List, Optional
 from enum import Enum
 
@@ -11,6 +11,14 @@ class Question(BaseModel):
     question: str
     options: List[str]
     correct_answer: int
+    explanation: str = Field(..., min_length=1, description="1-2 sentence explanation of why the correct answer is right")
+
+    @field_validator("explanation", mode="before")
+    @classmethod
+    def strip_explanation(cls, v: str) -> str:
+        if isinstance(v, str):
+            return v.strip()
+        return v
 
 class AnkiCard(BaseModel):
     front: str = Field(..., description="Вопрос/термин")
@@ -36,8 +44,6 @@ class PresentationSlide(BaseModel):
 class ExtendedLectureResponse(BaseModel):
     summary: str
     difficulty_level: DifficultyLevel
-    simplified_summary: Optional[str] = None
-    advanced_summary: Optional[str] = None
     test: List[Question]
     anki_cards: List[AnkiCard]
     external_sources: List[ExternalSource]

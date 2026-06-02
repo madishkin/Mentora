@@ -112,8 +112,6 @@ async def process_lecture(
         response = ExtendedLectureResponse(
             summary=parsed_results['summary'],
             difficulty_level=parsed_results['difficulty_level'],
-            simplified_summary=parsed_results['simplified_summary'],
-            advanced_summary=parsed_results['advanced_summary'],
             test=[Question(**q) for q in parsed_results['test']],
             anki_cards=[AnkiCard(**c) for c in parsed_results['anki_cards']],
             external_sources=[ExternalSource(**s) for s in parsed_results['external_sources']],

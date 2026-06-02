@@ -16,6 +16,8 @@ from app.database import Base
 from app.users.models import User, UserQuota  # noqa: F401
 from app.documents.models import Document  # noqa: F401
 from app.generation.models import Job, UsageRecord  # noqa: F401
+from app.courses.models import Course  # noqa: F401
+from app.study.models import Flashcard  # noqa: F401
 
 config = context.config
 

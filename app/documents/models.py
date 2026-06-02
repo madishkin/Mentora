@@ -64,6 +64,12 @@ class Document(Base):
         nullable=False,
         default=DocumentStatus.UPLOADED,
     )
+    course_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("courses.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
@@ -72,6 +78,7 @@ class Document(Base):
 
     # Relationships
     owner: Mapped["User"] = relationship("User", back_populates="documents")
+    course: Mapped["Course | None"] = relationship("Course", back_populates="documents")
     jobs: Mapped[list["Job"]] = relationship("Job", back_populates="document", lazy="selectin")
 
     def __repr__(self) -> str:

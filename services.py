@@ -99,6 +99,7 @@ class OpenAIService:
 3. Варианты ответов должны быть правдоподобными (не очевидные неправильные)
 4. Правильный ответ указывай индексом от 0 до 3
 5. Каждый вопрос должен быть четким и однозначным
+6. Для каждого вопроса добавь краткое объяснение (1-2 предложения), почему правильный ответ верный
 
 Верни ТОЛЬКО JSON массив в таком формате (без markdown):
 [
@@ -110,7 +111,8 @@ class OpenAIService:
       "Вариант ответа 3",
       "Вариант ответа 4"
     ],
-    "correct_answer": 0
+    "correct_answer": 0,
+    "explanation": "Краткое объяснение, почему данный ответ правильный"
   }}
 ]
 
@@ -186,8 +188,18 @@ class FastAIService:
             raise HTTPException(status_code=500, detail=f"AI API Error: {str(e)}")
 
     @staticmethod
-    async def process_all_features(lecture_text: str, target_difficulty: str = None) -> Dict:
+    async def process_all_features(lecture_text: str, target_difficulty: str = None, allowed_sections: set[str] = None) -> Dict:
         truncated_text = lecture_text[:5000]
+
+        # Determine if we need prompt2 features
+        prompt2_sections = {"anki_cards", "sources", "mindmap", "presentation"}
+        needs_prompt2 = True
+        if allowed_sections is not None:
+            needs_prompt2 = bool(allowed_sections & prompt2_sections)
+            
+        needs_test = True
+        if allowed_sections is not None and "test" not in allowed_sections:
+            needs_test = False
 
         if target_difficulty == 'beginner':
             summary_length = "800-1000 слов"
@@ -203,6 +215,18 @@ class FastAIService:
             test_complexity = "вопросы среднего уровня на понимание и применение"
 
         diff_instruction = f'\nОБЯЗАТЕЛЬНО: Уровень сложности должен быть "{target_difficulty}"!' if target_difficulty else ''
+
+        test_json_part = """,
+      "test": [
+        {
+          "question": "Полный текст вопроса?",
+          "options": ["вариант 1", "вариант 2", "вариант 3", "вариант 4"],
+          "correct_answer": 0,
+          "explanation": "1-2 предложения, почему данный ответ правильный"
+        }
+      ]""" if needs_test else ""
+        
+        test_req_part = f"\n    - test: 10 {test_complexity}, каждый вопрос ОБЯЗАТЕЛЬНО с полем \"explanation\"" if needs_test else ""
 
         prompt1 = f"""Создай основные учебные материалы по лекции.{diff_instruction}
     
@@ -228,19 +252,11 @@ class FastAIService:
     ЗАКЛЮЧЕНИЕ
     [2-3 абзаца]
     
-    Используй \\n\\n между разделами. БЕЗ markdown.",
-      "test": [
-        {{
-          "question": "Полный текст вопроса?",
-          "options": ["вариант 1", "вариант 2", "вариант 3", "вариант 4"],
-          "correct_answer": 0
-        }}
-      ]
+    Используй \\n\\n между разделами. БЕЗ markdown."{test_json_part}
     }}
     
     Требования:
-    - summary: {summary_length}, {summary_style}
-    - test: 10 {test_complexity}
+    - summary: {summary_length}, {summary_style}{test_req_part}
     - Только валидный JSON
     
     Лекция:
@@ -300,39 +316,45 @@ class FastAIService:
         system2 = "Ты методист. Создаёшь учебные материалы. Отвечай ТОЛЬКО валидным JSON без markdown."
 
         try:
-            print("запуск 2 параллельных запросов к OpenAI...")
+            print(f"запуск запросов к OpenAI (needs_prompt2={needs_prompt2})...")
 
-            results = await asyncio.gather(
-                FastAIService._async_openai_call(prompt1, system1, max_tokens=8000),
-                FastAIService._async_openai_call(prompt2, system2, max_tokens=5000),
-                return_exceptions=True
-            )
-
-            if isinstance(results[0], Exception):
-                print(f"Ошибка в запросе 1: {results[0]}")
-                raise results[0]
-            if isinstance(results[1], Exception):
-                print(f"Ошибка в запросе 2: {results[1]}")
-                raise results[1]
-
-            response1, response2 = results
+            if needs_prompt2:
+                results = await asyncio.gather(
+                    FastAIService._async_openai_call(prompt1, system1, max_tokens=8000),
+                    FastAIService._async_openai_call(prompt2, system2, max_tokens=5000),
+                    return_exceptions=True
+                )
+                if isinstance(results[0], Exception):
+                    raise results[0]
+                if isinstance(results[1], Exception):
+                    raise results[1]
+                response1, response2 = results
+            else:
+                response1 = await FastAIService._async_openai_call(prompt1, system1, max_tokens=8000)
+                response2 = "{}"
 
             result1 = json.loads(response1)
             print("запрос 1 выполнен: summary, test, difficulty")
 
             result2 = json.loads(response2)
-            print("запрос 2 выполнен: anki, sources, mindmap, presentation")
+            print("запрос 2 выполнен (или пропущен): anki, sources, mindmap, presentation")
+
+            # Validate quiz explanations
+            test_items = result1.get('test', [])
+            for i, item in enumerate(test_items):
+                if not isinstance(item, dict):
+                    raise ValueError(f"Quiz item {i + 1} is not a valid object")
+                if not item.get('explanation', '').strip():
+                    raise ValueError(f"Quiz item {i + 1} is missing a non-empty 'explanation' field")
 
             return {
-                'summary': result1.get('summary', 'Конспект не создан'),
+                'summary': result1.get('summary', 'Конспект не создан') if (allowed_sections is None or "summary" in allowed_sections) else "Конспект не создавался по вашему тарифу",
                 'difficulty_level': result1.get('difficulty', {}).get('level', target_difficulty or 'intermediate'),
-                'simplified_summary': None,
-                'advanced_summary': None,
-                'test': result1.get('test', [])[:10],
-                'anki_cards': result2.get('anki_cards', [])[:10],
-                'external_sources': result2.get('sources', [])[:5],
-                'mindmap': result2.get('mindmap', {'title': 'Лекция', 'children': []}),
-                'presentation': result2.get('presentation', [])[:6]
+                'test': test_items[:10] if (allowed_sections is None or "test" in allowed_sections) else [],
+                'anki_cards': result2.get('anki_cards', [])[:10] if (allowed_sections is None or "anki_cards" in allowed_sections) else [],
+                'external_sources': result2.get('sources', [])[:5] if (allowed_sections is None or "sources" in allowed_sections) else [],
+                'mindmap': result2.get('mindmap', {'title': 'Лекция', 'children': []}) if (allowed_sections is None or "mindmap" in allowed_sections) else {'title': 'Лекция', 'children': []},
+                'presentation': result2.get('presentation', [])[:6] if (allowed_sections is None or "presentation" in allowed_sections) else []
             }
 
         except json.JSONDecodeError as je:

@@ -105,6 +105,46 @@ class InvalidFileTypeError(AppError):
         )
 
 
+class PlanUpgradeRequiredError(AppError):
+    def __init__(self, message: str = "Upgrade your plan to access this feature", details: dict | None = None):
+        super().__init__(
+            code="plan_upgrade_required",
+            message=message,
+            status_code=403,
+            details=details,
+        )
+
+
+class MonthlyGenerationLimitExceededError(AppError):
+    def __init__(self, message: str = "Monthly generation limit exceeded", details: dict | None = None):
+        super().__init__(
+            code="monthly_generation_limit_exceeded",
+            message=message,
+            status_code=429,
+            details=details,
+        )
+
+
+class SectionNotAvailableOnPlanError(AppError):
+    def __init__(self, message: str = "Section not available on your current plan", details: dict | None = None):
+        super().__init__(
+            code="section_not_available_on_plan",
+            message=message,
+            status_code=403,
+            details=details,
+        )
+
+
+class DocumentTooLargeForPlanError(AppError):
+    def __init__(self, message: str = "Document is too large for your current plan", details: dict | None = None):
+        super().__init__(
+            code="document_too_large_for_plan",
+            message=message,
+            status_code=413,
+            details=details,
+        )
+
+
 # ── Exception handlers ────────────────────────────────────
 
 async def app_error_handler(_request: Request, exc: AppError) -> JSONResponse:

@@ -80,11 +80,17 @@ def create_app() -> FastAPI:
     from app.users.router import router as users_router
     from app.documents.router import router as documents_router
     from app.generation.router import router as generation_router
+    from app.courses.router import router as courses_router
+    from app.export.router import router as export_router
+    from app.study.router import router as study_router
 
     app.include_router(auth_router, prefix="/auth", tags=["Auth"])
     app.include_router(users_router, prefix="/users", tags=["Users"])
     app.include_router(documents_router, prefix="/documents", tags=["Documents"])
-    app.include_router(generation_router, tags=["Generation"])
+    app.include_router(generation_router, prefix="/generation", tags=["Generation"])
+    app.include_router(courses_router, prefix="/courses", tags=["Courses"])
+    app.include_router(export_router, prefix="/export", tags=["Export"])
+    app.include_router(study_router, prefix="/study", tags=["Study"])
 
     # ── Health check ──
     @app.get("/health", tags=["System"])

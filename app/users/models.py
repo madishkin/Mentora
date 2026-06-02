@@ -29,6 +29,12 @@ class UserRole(str, enum.Enum):
     STUDENT = "student"
 
 
+class SubscriptionPlan(str, enum.Enum):
+    FREE = "free"
+    STUDENT_PRO = "student_pro"
+    TEACHER_PRO = "teacher_pro"
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -44,6 +50,9 @@ class User(Base):
         Enum(UserRole, name="user_role", create_type=True, values_callable=lambda obj: [e.value for e in obj]),
         nullable=False,
         default=UserRole.STUDENT,
+    )
+    plan: Mapped[SubscriptionPlan] = mapped_column(
+        String(50), nullable=False, default=SubscriptionPlan.FREE
     )
     is_active: Mapped[bool] = mapped_column(
         Boolean, nullable=False, default=True
@@ -66,6 +75,9 @@ class User(Base):
     )
     documents: Mapped[list[Document]] = relationship(
         "Document", back_populates="owner", lazy="selectin"
+    )
+    courses: Mapped[list["Course"]] = relationship(
+        "Course", back_populates="owner", lazy="selectin"
     )
 
     def __repr__(self) -> str:
@@ -96,6 +108,9 @@ class UserQuota(Base):
     monthly_tokens_used: Mapped[int] = mapped_column(
         Integer, nullable=False, default=0
     )
+    monthly_generations_used: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=0
+    )
     last_daily_reset: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
@@ -116,3 +131,4 @@ class UserQuota(Base):
 
 # Forward reference imports (resolved after all models load)
 from app.documents.models import Document  # noqa: E402
+from app.courses.models import Course  # noqa: E402
