@@ -4,6 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 import uuid
+import urllib.parse
 
 from app.auth.dependencies import get_current_user
 from app.database import get_db
@@ -47,10 +48,11 @@ async def export_pptx(
     pptx_bytes = build_pptx(presentation_data, doc_title)
     
     filename = f"{doc_title}.pptx".replace(" ", "_")
+    encoded_filename = urllib.parse.quote(filename)
     return Response(
         content=pptx_bytes,
         media_type="application/vnd.openxmlformats-officedocument.presentationml.presentation",
-        headers={"Content-Disposition": f'attachment; filename="{filename}"'}
+        headers={"Content-Disposition": f"attachment; filename*=utf-8''{encoded_filename}"}
     )
 
 @router.get("/{job_id}/apkg")
@@ -85,8 +87,9 @@ async def export_apkg(
     apkg_bytes = build_apkg(anki_data, doc_title)
     
     filename = f"{doc_title}.apkg".replace(" ", "_")
+    encoded_filename = urllib.parse.quote(filename)
     return Response(
         content=apkg_bytes,
         media_type="application/apkg",
-        headers={"Content-Disposition": f'attachment; filename="{filename}"'}
+        headers={"Content-Disposition": f"attachment; filename*=utf-8''{encoded_filename}"}
     )

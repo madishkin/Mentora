@@ -23,6 +23,7 @@ ENV/
 # IDE
 .idea/
 .vscode/
+*.iml
 *.swp
 *.swo
 *~

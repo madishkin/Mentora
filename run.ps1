@@ -1,3 +1,3 @@
-& "C:\Users\madi\IdeaProjects\aiproject\.venv\Scripts\Activate.ps1"
+& "$PSScriptRoot\.venv\Scripts\Activate.ps1"
 
-python "C:\Users\madi\IdeaProjects\aiproject\run.py"
+python "$PSScriptRoot\run.py"
