@@ -15,7 +15,7 @@ def build_pptx(slides: list[dict], title: str) -> bytes:
     subtitle = slide.placeholders[1]
     
     title_shape.text = title
-    subtitle.text = "Сгенерировано в EduCraft AI"
+    subtitle.text = "Сгенерировано в Mentora AI"
     
     # Content slides
     bullet_slide_layout = prs.slide_layouts[1]

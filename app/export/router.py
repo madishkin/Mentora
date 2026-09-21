@@ -41,7 +41,7 @@ async def export_pptx(
     if not presentation_data:
         raise HTTPException(status_code=404, detail="Нет данных для презентации")
         
-    doc_title = job.document.original_filename if job.document else "EduCraft Presentation"
+    doc_title = job.document.original_filename if job.document else "Mentora Presentation"
     if doc_title.endswith((".pdf", ".docx")):
         doc_title = doc_title.rsplit(".", 1)[0]
         
@@ -79,7 +79,7 @@ async def export_apkg(
     if not anki_data:
         raise HTTPException(status_code=404, detail="Нет данных для Anki карточек")
         
-    doc_title = job.document.original_filename if job.document else "EduCraft Flashcards"
+    doc_title = job.document.original_filename if job.document else "Mentora Flashcards"
     if doc_title.endswith((".pdf", ".docx")):
         doc_title = doc_title.rsplit(".", 1)[0]
         

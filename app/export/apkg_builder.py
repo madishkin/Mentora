@@ -13,7 +13,7 @@ def build_apkg(cards: list[dict], deck_name: str) -> bytes:
     
     my_model = genanki.Model(
       model_id,
-      'EduCraft Basic Model',
+      'Mentora Basic Model',
       fields=[
         {'name': 'Question'},
         {'name': 'Answer'},

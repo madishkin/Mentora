@@ -48,7 +48,7 @@ def setup_logging() -> None:
 
 def get_logger(name: str) -> logging.Logger:
     """Return a named logger."""
-    return logging.getLogger(f"educraft.{name}")
+    return logging.getLogger(f"mentora.{name}")
 
 
 def generate_request_id() -> str:

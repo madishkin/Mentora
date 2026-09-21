@@ -1,5 +1,5 @@
 """
-EduCraft AI — FastAPI application factory.
+Mentora AI — FastAPI application factory.
 """
 
 from __future__ import annotations
@@ -34,17 +34,17 @@ logger = get_logger("main")
 async def lifespan(app: FastAPI):
     """Startup / shutdown lifecycle."""
     setup_logging()
-    logger.info("EduCraft AI starting up", extra={"env": settings.app_env})
+    logger.info("Mentora AI starting up", extra={"env": settings.app_env})
     yield
     await engine.dispose()
-    logger.info("EduCraft AI shut down")
+    logger.info("Mentora AI shut down")
 
 
 # ── App factory ───────────────────────────────────────────
 
 def create_app() -> FastAPI:
     app = FastAPI(
-        title="EduCraft AI",
+        title="Mentora AI",
         version="2.0.0",
         description="AI-powered educational content generation platform",
         lifespan=lifespan,

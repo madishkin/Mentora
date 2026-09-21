@@ -10,12 +10,12 @@ import tempfile
 import os
 
 app = FastAPI(
-    title="EduCraft Extended API",
-    version="2.0",
-    description="Быстрая обработка лекций с AI"
+    title="Mentora Extended API",
+    description="Extended API for study plans, courses, and flashcards",
+    version="1.0.0"
 )
 
-# CORS
+# CORS configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -28,9 +28,8 @@ app.add_middleware(
 @app.get("/")
 async def root():
     return {
-        "message": "EduCraft API",
-        "version": "2.0",
-        "status": "running"
+        "message": "Mentora API",
+        "status": "active"
     }
 
 

@@ -1,4 +1,4 @@
-# EduCraft AI — Backend 🎓🤖
+# Mentora AI — Backend 🎓🤖
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10+-blue?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
@@ -9,7 +9,7 @@
   <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License" />
 </p>
 
-> **EduCraft AI** is an intelligent educational platform powered by Large Language Models (LLMs) that automatically transforms lecture notes and study documents (PDF, DOCX) into a comprehensive, structured learning ecosystem.
+> **Mentora AI** is an intelligent educational platform powered by Large Language Models (LLMs) that automatically transforms lecture notes and study documents (PDF, DOCX) into a comprehensive, structured learning ecosystem.
 
 ---
 
@@ -32,7 +32,7 @@
 
 Preparing high-quality study materials (summaries, quizzes, flashcards, slides) is time-consuming for educators, while students often struggle with structuring raw lecture materials for efficient self-study.
 
-**EduCraft AI** solves this by acting as a digital instructional designer:
+**Mentora AI** solves this by acting as a digital instructional designer:
 1. Ingests lecture notes, textbooks, or documents (PDF, DOCX).
 2. Extracts and preprocesses clean text.
 3. Concurrently prompts state-of-the-art LLMs to generate 6 distinct educational artifacts.

@@ -1,5 +1,5 @@
 """
-EduCraft AI — Entry point.
+Mentora AI — Entry point.
 """
 
 import uvicorn
