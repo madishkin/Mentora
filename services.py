@@ -174,11 +174,9 @@ class FastAIService:
             elif content.startswith("```"):
                 content = content[3:].lstrip()
 
-            # Удаляем ``` в конце
             if content.endswith("```"):
                 content = content[:-3].rstrip()
 
-            # Удаляем возможные пробелы и переносы
             content = content.strip()
 
             return content

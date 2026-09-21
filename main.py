@@ -60,7 +60,6 @@ async def process_lecture(
         JSON с конспектом, тестами, карточками, источниками, mindmap, презентацией
     """
 
-    # 1. ПРОВЕРКА ФАЙЛА
     if not file.filename:
         raise HTTPException(status_code=400, detail="Файл не предоставлен")
 
@@ -71,17 +70,12 @@ async def process_lecture(
             detail="Поддерживаются только PDF и DOCX файлы"
         )
 
-    # 2. временный файл
     with tempfile.NamedTemporaryFile(delete=False, suffix=f'.{file_extension}') as temp_file:
         content = await file.read()
         temp_file.write(content)
         temp_file_path = temp_file.name
 
     try:
-        print(f"обработка файла: {file.filename}")
-
-        # 3.
-        print("извлечение текста...")
         if file_extension == 'pdf':
             lecture_text = FileProcessor.extract_text_from_pdf(temp_file_path)
         else:
@@ -95,19 +89,12 @@ async def process_lecture(
 
         lecture_text = lecture_text[:15000]
 
-        # 4.
-        print("обработка...")
-
         raw_results = await FastAIService.process_all_features(
             lecture_text,
             target_difficulty=target_difficulty
         )
-        # 5
-        print("Парсинг результатов...")
         parsed_results = FastAIService.parse_results(raw_results, lecture_text)
 
-        # 6.
-        print("Формирование ответа...")
         response = ExtendedLectureResponse(
             summary=parsed_results['summary'],
             difficulty_level=parsed_results['difficulty_level'],

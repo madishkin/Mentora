@@ -47,10 +47,8 @@ async def import_flashcards(
     if not cards_data:
         raise HTTPException(status_code=400, detail="No cards found in result")
 
-    # Get course_id from document (we need to eager load it or query it if not loaded)
-    # Actually, document is relationship on job, but might not be eager loaded.
     await db.refresh(job, ["document"])
-    course_id = job.document.course_id  # may be None, that's ok
+    course_id = job.document.course_id
 
     imported_count = 0
     now = datetime.now(timezone.utc)
