@@ -1,7 +1,3 @@
-"""
-Auth dependencies — FastAPI dependency injection for authentication.
-"""
-
 from __future__ import annotations
 
 import uuid

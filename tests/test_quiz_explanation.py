@@ -1,13 +1,3 @@
-"""
-Tests for quiz explanation field.
-
-Verifies that:
-1. Question model accepts valid explanation
-2. Question model rejects missing/empty explanation
-3. Full ExtendedLectureResponse includes explanation in every quiz item
-4. Service-level validation rejects quiz items without explanation
-"""
-
 import pytest
 from pydantic import ValidationError
 

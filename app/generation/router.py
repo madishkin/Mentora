@@ -1,7 +1,3 @@
-"""
-Generation router — precheck, starting background jobs, and polling status.
-"""
-
 from __future__ import annotations
 
 import os

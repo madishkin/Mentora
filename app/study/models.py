@@ -1,7 +1,3 @@
-"""
-Study ORM models for Active Learning.
-"""
-
 from __future__ import annotations
 
 import uuid

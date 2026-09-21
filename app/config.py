@@ -1,9 +1,3 @@
-"""
-EduCraft AI — Application Configuration.
-
-All settings loaded from environment variables with sensible defaults.
-"""
-
 from __future__ import annotations
 
 import json

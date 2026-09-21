@@ -1,7 +1,3 @@
-"""
-EduCraft AI — Async SQLAlchemy database setup for PostgreSQL.
-"""
-
 from __future__ import annotations
 
 from sqlalchemy.ext.asyncio import (

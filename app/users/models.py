@@ -1,7 +1,3 @@
-"""
-User & UserQuota ORM models — PostgreSQL native types.
-"""
-
 from __future__ import annotations
 
 import enum

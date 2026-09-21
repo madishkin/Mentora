@@ -1,7 +1,3 @@
-"""
-Auth router — registration, login, token refresh.
-"""
-
 from __future__ import annotations
 
 import uuid

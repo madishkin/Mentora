@@ -1,10 +1,3 @@
-"""
-Billing service — quota management with row-level locking.
-
-Uses PostgreSQL SELECT ... FOR UPDATE to prevent race conditions
-during concurrent token deductions.
-"""
-
 from __future__ import annotations
 
 import uuid

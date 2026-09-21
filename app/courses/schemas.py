@@ -1,7 +1,3 @@
-"""
-Course schemas.
-"""
-
 from datetime import datetime
 import uuid
 from typing import List, Optional

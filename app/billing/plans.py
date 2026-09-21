@@ -1,12 +1,3 @@
-"""
-Subscription plans and their respective generation limits.
-
-Limits design principles:
-  - Free plan must handle a real lecture chapter (~6-8 pages).
-  - If text exceeds limit, truncate to first N chars instead of rejecting.
-  - Role never affects limits — only plan does.
-"""
-
 from typing import Dict, Any
 from app.users.models import SubscriptionPlan
 

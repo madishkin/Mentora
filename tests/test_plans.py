@@ -1,7 +1,3 @@
-"""
-Tests for plan-based limits and access control.
-"""
-
 import pytest
 from unittest.mock import AsyncMock, patch
 

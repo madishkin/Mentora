@@ -1,16 +1,3 @@
-"""
-EduCraft AI — Standardized error handling.
-
-Provides a uniform error response format across the entire API:
-  {
-    "error": {
-      "code": "QUOTA_EXCEEDED",
-      "message": "Daily token limit reached.",
-      "details": { ... }
-    }
-  }
-"""
-
 from __future__ import annotations
 
 from typing import Any, Dict, Optional

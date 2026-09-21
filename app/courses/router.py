@@ -1,7 +1,3 @@
-"""
-Courses router — manage subjects and group documents.
-"""
-
 from __future__ import annotations
 
 import uuid
