@@ -13,7 +13,7 @@
 
 ---
 
-## 📌 Table of Contents
+## Table of Contents
 - [Overview](#-overview)
 - [Key Features](#-key-features)
 - [System Architecture](#-system-architecture)
@@ -40,14 +40,14 @@ Preparing high-quality study materials (summaries, quizzes, flashcards, slides) 
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-1. **📝 Adaptive Summaries**: Automatically adjusts depth, analogies, and technical rigor based on the target complexity level (Beginner, Intermediate, Advanced).
-2. **🎯 Interactive Quizzes**: Generates comprehensive multiple-choice quizzes with instant answer validation, score calculation, and detailed explanations.
-3. **🗂️ Anki Flashcards**: Active-recall flashcards with instant export to `.apkg` files, ready for seamless import into Anki (desktop & mobile).
-4. **🧠 Hierarchical Mind Maps**: Multi-level conceptual breakdown (up to 3 levels deep) for visual understanding of topic relationships.
-5. **📊 Presentation Slide Decks**: Generates 6 structured slides with key takeaways and comprehensive speaker notes + direct export to PowerPoint (`.pptx`).
-6. **🔗 Curated External Sources**: Selects verified external references (Wikipedia articles, books, documentations) for deeper study.
+1. ** Adaptive Summaries**: Automatically adjusts depth, analogies, and technical rigor based on the target complexity level (Beginner, Intermediate, Advanced).
+2. ** Interactive Quizzes**: Generates comprehensive multiple-choice quizzes with instant answer validation, score calculation, and detailed explanations.
+3. ** Anki Flashcards**: Active-recall flashcards with instant export to `.apkg` files, ready for seamless import into Anki (desktop & mobile).
+4. ** Hierarchical Mind Maps**: Multi-level conceptual breakdown (up to 3 levels deep) for visual understanding of topic relationships.
+5. ** Presentation Slide Decks**: Generates 6 structured slides with key takeaways and comprehensive speaker notes + direct export to PowerPoint (`.pptx`).
+6. ** Curated External Sources**: Selects verified external references (Wikipedia articles, books, documentations) for deeper study.
 
 ---
 
@@ -117,7 +117,7 @@ sequenceDiagram
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### 1. Clone the repository
 ```bash
@@ -172,7 +172,7 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
 ---
 
-## 📖 API Documentation
+##  API Documentation
 
 Once the server is running, interactive API documentation is available at:
 * **Swagger UI**: [http://localhost:8000/docs](http://localhost:8000/docs)
@@ -206,7 +206,7 @@ Once the server is running, interactive API documentation is available at:
 
 ---
 
-## 📱 Frontend Client
+##  Frontend Client
 
 The companion mobile application is built using **Flutter** (Dart):
 * **Cross-platform**: Android, iOS, Web, and Desktop support.
@@ -215,6 +215,6 @@ The companion mobile application is built using **Flutter** (Dart):
 
 ---
 
-## 📄 License
+##  License
 
 This project is licensed under the [MIT License](LICENSE).
