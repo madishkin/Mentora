@@ -121,8 +121,8 @@ sequenceDiagram
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/madishkin/diplome.git
-cd diplome
+git clone https://github.com/madishkin/Mentora.git
+cd Mentora
 ```
 
 ### 2. Set up virtual environment
